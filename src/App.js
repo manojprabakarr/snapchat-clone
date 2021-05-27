@@ -1,23 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import  React,{useEffect} from 'react'
+import './App.css'
+import Webcam from './components/WebcamCapture'
+import Chats from './components/chats'
+import {BrowserRouter as Router,Route,Switch} from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
+import { login, logout, selectUser } from "./features/appslice";
+import {auth} from './firebase'
+import Login from './components/login'
+
+
 
 function App() {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        dispatch(
+          login({
+            username: authUser.displayName,
+            profileImage: authUser.photoURL,
+            id: authUser.uid,
+          })
+        );
+      } else {
+        dispatch(logout());
+      }
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Router>
+      {!user ? (
+          <Login />
+        ) : (
+          <>
+        <img
+              className="app_logo"
+              src="https://lakeridgenewsonline.com/wp-content/uploads/2020/04/snapchat.jpg"
+              alt=""
+            />
+            <div className="app_body">
+              <div className="app_bodyBackground">
+                <Switch>
+               
+                  <Route path="/"><Webcam/></Route>
+                  <Route  path="/chats"><Chats/></Route>
+                 
+                </Switch>
+
+                
+              
+
+              </div>
+              </div>
+              </>
+              )}
+  
+              </Router>
     </div>
   );
 }
