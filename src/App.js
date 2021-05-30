@@ -1,12 +1,14 @@
 import  React,{useEffect} from 'react'
 import './App.css'
 import Webcam from './components/WebcamCapture'
-import Chats from './components/chats'
+import Chatview from './components/Chatview'
 import {BrowserRouter as Router,Route,Switch} from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout, selectUser } from "./features/appslice";
 import {auth} from './firebase'
 import Login from './components/login'
+import Preview from './components/preview'
+import Chats from './components/chats'
 
 
 
@@ -33,10 +35,10 @@ function App() {
   return (
     <div className="app">
       <Router>
-      {!user ? (
-          <Login />
-        ) : (
-          <>
+        {!user ? (
+            <Login/>
+        ):(
+        <>
         <img
               className="app_logo"
               src="https://lakeridgenewsonline.com/wp-content/uploads/2020/04/snapchat.jpg"
@@ -46,8 +48,10 @@ function App() {
               <div className="app_bodyBackground">
                 <Switch>
                
-                  <Route path="/"><Webcam/></Route>
-                  <Route  path="/chats"><Chats/></Route>
+                  <Route exact path="/"><Webcam/></Route>
+                  <Route  path="/chats/view"><Chatview/></Route>
+                  <Route path="/chats"><Chats/></Route>
+                  <Route path="/preview"><Preview/></Route>
                  
                 </Switch>
 
@@ -56,9 +60,8 @@ function App() {
 
               </div>
               </div>
-              </>
-              )}
-  
+              
+              </>)}
               </Router>
     </div>
   );
